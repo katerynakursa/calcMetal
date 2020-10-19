@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QGridLayout, QApplication
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QGridLayout, QApplication, QDoubleSpinBox
 
 class Example(QWidget):
 
@@ -18,17 +18,19 @@ class Example(QWidget):
         addAlloy = QLabel('Добавим')
         getAlloy = QLabel('Получим')
 
-        nowPerFirst = QLineEdit()
-        nowPerSecond = QLineEdit()
-        nowMassa = QLineEdit()
+        self.nowPerFirst = QDoubleSpinBox(self)
+        self.nowPerSecond = QDoubleSpinBox(self)
+        self.nowMassa = QDoubleSpinBox(self)
 
-        addPerFirst = QLineEdit()
-        addPerSecond = QLineEdit()
-        addMassa = QLineEdit()
+        self.addPerFirst = QDoubleSpinBox(self)
+        self.addPerSecond = QDoubleSpinBox(self)
+        self.addMassa = QDoubleSpinBox(self)
 
-        getPerFirst = QLineEdit()
-        getPerSecond = QLineEdit()
-        getMassa = QLineEdit()
+        self.getPerFirst = QLineEdit(self)
+        self.getPerSecond = QLineEdit(self)
+        self.getMassa = QLineEdit(self)
+
+        self.btn = QPushButton('Расчет', self)
 
         grid = QGridLayout()
         grid.setSpacing(10)
@@ -38,25 +40,78 @@ class Example(QWidget):
         grid.addWidget(massa, 3, 0)
 
         grid.addWidget(nowAlloy, 0, 1)
-        grid.addWidget(nowPerFirst, 1, 1)
-        grid.addWidget(nowPerSecond, 2, 1)
-        grid.addWidget(nowMassa, 3, 1)
+        grid.addWidget(self.nowPerFirst, 1, 1)
+        grid.addWidget(self.nowPerSecond, 2, 1)
+        grid.addWidget(self.nowMassa, 3, 1)
 
         grid.addWidget(addAlloy, 0, 2)
-        grid.addWidget(addPerFirst, 1, 2)
-        grid.addWidget(addPerSecond, 2, 2)
-        grid.addWidget(addMassa, 3, 2)
+        grid.addWidget(self.addPerFirst, 1, 2)
+        grid.addWidget(self.addPerSecond, 2, 2)
+        grid.addWidget(self.addMassa, 3, 2)
 
         grid.addWidget(getAlloy, 0, 3)
-        grid.addWidget(getPerFirst, 1, 3)
-        grid.addWidget(getPerSecond, 2, 3)
-        grid.addWidget(getMassa, 3, 3)
+        grid.addWidget(self.getPerFirst, 1, 3)
+        grid.addWidget(self.getPerSecond, 2, 3)
+        grid.addWidget(self.getMassa, 3, 3)
+
+        grid.addWidget(self.btn, 4, 3)
 
         self.setLayout(grid)
 
-        self.setGeometry(300, 300, 600, 100)
+        self.btn.clicked.connect(self.calcMetal)
+
+        self.setGeometry(300, 300, 400, 100)
         self.setWindowTitle('Расчет сплавов')
         self.show()
+
+    def calcMetal(self):
+
+        nowPerFirst = self.nowPerFirst.value()
+        nowPerSecond = self.nowPerSecond.value()
+        nowMassa = self.nowMassa.value()
+
+        addPerFirst = self.addPerFirst.value()
+        addPerSecond = self.addPerSecond.value()
+        addMassa = self.addMassa.value()
+
+        nowMassaFirst = self.calcMassa(nowPerFirst, nowMassa)
+        nowMassaSecond = self.calcMassa(nowPerSecond, nowMassa)
+
+        addMassaFirst = self.calcMassa(addPerFirst, addMassa)
+        addMassaSecond = self.calcMassa(addPerSecond, addMassa)
+
+        getMassaFirst = self.sumMassa(nowMassaFirst, addMassaFirst)
+        getMassaSecond = self.sumMassa(nowMassaSecond, addMassaSecond)
+        getMassa = self.sumMassa(nowMassa, addMassa)
+
+        getPerFirst = self.percent(getMassaFirst, getMassa)
+        getPerSecond = self.percent(getMassaSecond, getMassa)
+
+        self.getPerFirst.setText(str(getPerFirst))
+        self.getPerSecond.setText(str(getPerSecond))
+        self.getMassa.setText(str(getMassa))
+
+
+
+
+
+    def calcMassa(self, percent, massa_total):
+
+        massaElem = percent * massa_total / 100
+        return massaElem
+
+    def sumMassa(self, massa_now, massa_add):
+
+        massaAll = massa_now + massa_add
+        return massaAll
+
+    def percent(self, massa_el, massa_total):
+
+        per = massa_el / massa_total *100
+        return per
+
+
+
 
 if __name__ == '__main__':
 
