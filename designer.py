@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QGridLayout, QApplication, QDoubleSpinBox
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QGridLayout, QApplication, QDoubleSpinBox
 
 class Example(QWidget):
 
@@ -18,17 +18,17 @@ class Example(QWidget):
         addAlloy = QLabel('Добавим')
         getAlloy = QLabel('Получим')
 
-        self.nowPerFirst = QDoubleSpinBox(self)
-        self.nowPerSecond = QDoubleSpinBox(self)
-        self.nowMassa = QDoubleSpinBox(self)
+        self.nowPerFirst = QDoubleSpinBox(self, decimals=1)
+        self.nowPerSecond = QDoubleSpinBox(self, decimals=1)
+        self.nowMassa = QDoubleSpinBox(self, decimals=1, maximum=9999)
 
-        self.addPerFirst = QDoubleSpinBox(self)
-        self.addPerSecond = QDoubleSpinBox(self)
-        self.addMassa = QDoubleSpinBox(self)
+        self.addPerFirst = QDoubleSpinBox(self, decimals=1)
+        self.addPerSecond = QDoubleSpinBox(self, decimals=1)
+        self.addMassa = QDoubleSpinBox(self, decimals=1, maximum=9999)
 
-        self.getPerFirst = QLineEdit(self)
-        self.getPerSecond = QLineEdit(self)
-        self.getMassa = QLineEdit(self)
+        self.getPerFirst = QLabel(self)
+        self.getPerSecond = QLabel(self)
+        self.getMassa = QLabel(self)
 
         self.btn = QPushButton('Расчет', self)
 
@@ -88,8 +88,11 @@ class Example(QWidget):
         getPerSecond = self.percent(getMassaSecond, getMassa)
 
         self.getPerFirst.setText(str(getPerFirst))
+        self.getPerFirst.adjustSize()
         self.getPerSecond.setText(str(getPerSecond))
+        self.getPerSecond.adjustSize()
         self.getMassa.setText(str(getMassa))
+        self.getMassa.adjustSize()
 
 
 
@@ -107,7 +110,7 @@ class Example(QWidget):
 
     def percent(self, massa_el, massa_total):
 
-        per = massa_el / massa_total *100
+        per = round(massa_el / massa_total *100, 1)
         return per
 
 
